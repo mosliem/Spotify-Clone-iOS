@@ -95,12 +95,12 @@ class PlaylistCollectionReusableView: UICollectionReusableView {
         descriptionLabel.frame = CGRect(
             x: 20,
             y: PlaylistNameLabel.bottom ,
-            width: width-30,
-            height: 60
+            width: width-40,
+            height: 70
         )
         ownerNameLabel.frame = CGRect(
             x: 20,
-            y: descriptionLabel.bottom,
+            y: descriptionLabel.bottom+5,
             width:width-10,
             height: 20
         )
@@ -123,7 +123,7 @@ class PlaylistCollectionReusableView: UICollectionReusableView {
     func configure(viewModel : PlaylistHeaderViewModel){
         PlaylistCoverImageView.sd_setImage(with: viewModel.playlistCoverURL) { (image, error, _,_) in
             guard let image = image ,error == nil else{
-                print(error?.localizedDescription)
+                print(error!)
                 return
             }
             self.backgroundColor = UIColor(patternImage: image)

@@ -48,7 +48,7 @@ class APICaller {
     
     public func getNewAlbumRealeses(completion : @escaping (Result <NewRealesesResponse , Error>) -> Void) {
         
-        createRequest(url: URL(string:Constants.baseAPIUrl+"/browse/new-releases?limit=36&offset=36"),
+        createRequest(url: URL(string:Constants.baseAPIUrl+"/browse/new-releases?limit=36&offset=37"),
                       HttpType: .GET) { (request) in
             
             self.createTask(type: NewRealesesResponse.self, request: request) { (result, error) in
@@ -64,7 +64,7 @@ class APICaller {
     
     // get the featured playlist shown on browse tab
     public func getFeaturesPlaylist(completion : @escaping (Result< FeaturedPlaylistResponse , Error>)->Void ) {
-        let url = URL(string: Constants.baseAPIUrl+"/browse/featured-playlists?limit=10")
+        let url = URL(string: Constants.baseAPIUrl+"/browse/featured-playlists?limit=20")
         createRequest(url: url, HttpType: .GET) { [weak self] (request) in
             
             self?.createTask(type: FeaturedPlaylistResponse.self, request:request , taskCompletion: { (result, error) in
@@ -106,7 +106,7 @@ class APICaller {
     public func getRecommendations(completion: @escaping (Result<RecommendationResponse , Error>) -> Void){
         getAvailableGenreSeeds {[weak self] seeds in
             
-            let url = URL(string: Constants.baseAPIUrl+"/recommendations?seed_genres=\(seeds)&limit=15")
+            let url = URL(string: Constants.baseAPIUrl+"/recommendations?seed_genres=\(seeds)&limit=25")
             self?.createRequest(url: url, HttpType: .GET) { [weak self](request) in
                 self?.createTask(type: RecommendationResponse.self, request: request, taskCompletion: { (result, error) in
                     guard let result = result , error == nil else {
@@ -128,7 +128,6 @@ class APICaller {
                     completion(.failure(APIError.failedToGetData))
                     return
                 }
-                print(result.artists)
                 completion(.success(result))
             }
         }

@@ -11,6 +11,17 @@ enum BrowseSectionType{
     case newRealeses(viewModel : [NewRealesesViewModel])
     case featuredPlaylists(viewModel : [FeaturedPlaylistViewModel])
     case recommendedTracks(viewModel : [RecommendationViewModel])
+    
+    var title:String{
+        switch self {
+        case .newRealeses:
+            return "New Realeses"
+        case .featuredPlaylists:
+            return "Featured playlists"
+        case .recommendedTracks:
+            return "Recommendations"
+        }
+    }
 }
 
 class HomeVC: UIViewController {
@@ -57,6 +68,7 @@ class HomeVC: UIViewController {
                                 forCellWithReuseIdentifier: FeaturedPlaylistCell.identifier)
         collectionView.register(RecommendedTrackCell.self,
                                 forCellWithReuseIdentifier: RecommendedTrackCell.identifier)
+        collectionView.register(HomeSectionTitles.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HomeSectionTitles.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -259,7 +271,7 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
         case .newRealeses :
             let album =  newAlbums[indexPath.row]
             let vc = AlbumVC(album: album)
-            vc.navigationItem.largeTitleDisplayMode = .always
+            vc.navigationItem.largeTitleDisplayMode = .never
             navigationController?.pushViewController(vc, animated: true)
             
         case .featuredPlaylists :
@@ -272,15 +284,22 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HomeSectionTitles.identifier, for: indexPath) as? HomeSectionTitles  , kind == UICollectionView.elementKindSectionHeader else{
+            return UICollectionReusableView()
+        }
+        header.configure(title: sections[indexPath.section].title)
+        return header
+    }
     // creates the collection view for (new Realeses, featured playlists and recommendation)
     private static func createSectionLayout(section : Int) -> NSCollectionLayoutSection
     {
-        print("sectionLayout")
+        
+        let sectionHeaders = [NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)]
         switch section {
         // item
         case 0:
-            print("layout1")
             let item = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -309,11 +328,11 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
             //section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .groupPaging
+            section.boundarySupplementaryItems = sectionHeaders
             return section
             
         // featured playlists
         case 1:
-            print("layout2")
             let item = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension:.absolute(200),
@@ -332,12 +351,12 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
             //section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = sectionHeaders
             return section
             
             
         // recommended TRACKS
         case 2:
-            print("layout3")
             let item = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension:.absolute(200),
@@ -356,6 +375,7 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
             //section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = sectionHeaders
             return section
             
             

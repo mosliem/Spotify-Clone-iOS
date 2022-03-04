@@ -28,6 +28,7 @@ class PlaylistVC: UIViewController {
         self.view.backgroundColor = .systemBackground
         fetchPlaylistData()
         configureCollectionView()
+        createAshareButton()
     }
     
     override func viewDidLayoutSubviews() {
@@ -86,6 +87,19 @@ class PlaylistVC: UIViewController {
         )]
         return section
     }
+    private func createAshareButton(){
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare))
+    }
+    
+    @objc private func didTapShare(){
+        guard  let playlistURL = URL(string : playlist.external_urls["spotify"] ?? "") else{
+            return
+        }
+        let vc = UIActivityViewController(activityItems: [playlistURL],
+                                          applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
+    }
 
 }
 
@@ -137,11 +151,8 @@ extension PlaylistVC : UICollectionViewDataSource , UICollectionViewDelegate {
 }
 
 extension PlaylistVC: PlaylistCollectionReusableViewDelegate {
-
     
     func PlaylistCollectionReusableViewPlayAllTracks(_ header: PlaylistCollectionReusableView) {
         print("Playing all")
     }
-    
-    
 }
