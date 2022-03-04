@@ -119,7 +119,7 @@ class APICaller {
         }
     }
     
-    
+//MARK:- Get Details
     public func getAlbumDetails(id : String , completion: @escaping(Result<AlbumDetailsResponse,Error>) -> Void) {
         
         createRequest(url: URL(string:Constants.baseAPIUrl+"/albums/\(id)"), HttpType: .GET) { [weak self] (request) in
@@ -144,7 +144,14 @@ class APICaller {
                 completion(.success(result))
             }
         }
+    } 
+ //MARK:- Get Categories
+    
+    public func getCategories(completion: @escaping(Result<String, Error>)-> Void){
+        
     }
+    
+    
     // MARK:- PRIVATE
     
     // Generic Function for creating a request
