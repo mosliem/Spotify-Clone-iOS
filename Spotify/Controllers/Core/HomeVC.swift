@@ -77,7 +77,6 @@ class HomeVC: UIViewController {
     
     private func fetchData()
     {
-        
         var newAlbumRealeses : NewRealesesResponse?
         var recommendations : RecommendationResponse?
         var featuredPlaylist : FeaturedPlaylistResponse?

@@ -19,7 +19,6 @@ class PlaylistCollectionReusableView: UICollectionReusableView {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "photo")
         imageView.contentMode = .scaleAspectFill
- 
         return imageView
     }()
 

@@ -6,24 +6,23 @@
 //
 
 import UIKit
-
+import SDWebImage
 class CategoryCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "CategoryCollectionViewCell"
      var color : UIColor?
     private let categoryImageView : UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = .white
         imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = false
-        imageView.transform = imageView.transform.rotated(by: CGFloat (Double.pi/4))
-
+        imageView.transform = imageView.transform.rotated(by: CGFloat (Double.pi/9))
         return imageView
     }()
     
     
     private let categoryNameLabel : UILabel = {
         let label = UILabel()
+        label.font =  UIFont(name: "CircularStd-Bold", size: 18)
+        label.numberOfLines = 0
         return label
     }()
     
@@ -42,7 +41,6 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(categoryImageView)
         contentView.addSubview(categoryNameLabel)
-        contentView.layer.masksToBounds = true
         contentView.layer.cornerRadius = 7
         contentView.layer.masksToBounds = true
     }
@@ -53,10 +51,11 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        categoryNameLabel.sizeToFit()
         categoryImageView.sizeToFit()
-        categoryImageView.frame = CGRect(x: contentView.width-80, y: contentView.center.y - 35, width: 80, height: 70)
-        categoryNameLabel.frame = CGRect(x: 20, y: contentView.height - 50, width:contentView.width-20, height: 40)
+        categoryNameLabel.sizeToFit()
+            self.categoryImageView.frame = CGRect(x: self.contentView.width-60, y: self.contentView.height-80, width: 70, height: 70)
+            self.categoryNameLabel.frame = CGRect(x: 5, y: 10, width:self.contentView.width-80, height: 50)
+    
     }
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -65,9 +64,11 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = nil
     }
     
-    func configureCategoryViewModel(indexPath : Int){
-        categoryNameLabel.text = "Rock"
-        categoryImageView.image = UIImage(systemName: "music.quarternote.3")
+    func configureCategoryViewModel(indexPath: Int , viewModel: CategoryViewModel){
+        categoryNameLabel.text = viewModel.categoryName
+        categoryImageView.sd_setImage(with: viewModel.categoryCover) { (_, _, _, _) in
+            self.categoryImageView.applyshadow(shadowRadius: 40, shadowOpacity: 1, shadowColor: self.color ?? .black)
+        }
         contentView.backgroundColor = colors[indexPath % colors.count]
     }
 }

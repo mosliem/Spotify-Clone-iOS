@@ -144,13 +144,25 @@ class APICaller {
                 completion(.success(result))
             }
         }
-    } 
+    }
  //MARK:- Get Categories
     
-    public func getCategories(completion: @escaping(Result<String, Error>)-> Void){
+    public func getCategories(completion: @escaping(Result<CategoryResponse, Error>)-> Void){
+        createRequest(url:URL(string: Constants.baseAPIUrl + "/browse/categories?limit=50&country=EG"), HttpType: .GET) { [weak self](request) in
+            self?.createTask(type: CategoryResponse.self, request: request) {(result, error) in
+                guard let result = result , error == nil else{
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                completion(.success(result))
+            }
+        }
         
     }
     
+    public func getCategoryDetails() {
+        
+    }
     
     // MARK:- PRIVATE
     
