@@ -9,7 +9,7 @@ import UIKit
 
 enum BrowseSectionType{
     case newRealeses(viewModel : [NewRealesesViewModel])
-    case featuredPlaylists(viewModel : [FeaturedPlaylistViewModel])
+    case featuredPlaylists(viewModel : [PlaylistViewModel])
     case recommendedTracks(viewModel : [RecommendationViewModel])
     
     var title:String{
@@ -64,8 +64,8 @@ class HomeVC: UIViewController {
         
         collectionView.register(NewRealesesCell.self,
                                 forCellWithReuseIdentifier: NewRealesesCell.identifier)
-        collectionView.register(FeaturedPlaylistCell.self,
-                                forCellWithReuseIdentifier: FeaturedPlaylistCell.identifier)
+        collectionView.register(PlaylistCell.self,
+                                forCellWithReuseIdentifier: PlaylistCell.identifier)
         collectionView.register(RecommendedTrackCell.self,
                                 forCellWithReuseIdentifier: RecommendedTrackCell.identifier)
         collectionView.register(HomeSectionTitles.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HomeSectionTitles.identifier)
@@ -163,7 +163,7 @@ class HomeVC: UIViewController {
         
         sections.append(.featuredPlaylists(viewModel: playlists.compactMap({
             
-            return FeaturedPlaylistViewModel(playlistName: $0.name, playlistImageUrl: URL(string:$0.images.first?.url ?? "") , ownerName: $0.owner.display_name )
+            return PlaylistViewModel(playlistName: $0.name, playlistImageUrl: URL(string:$0.images.first?.url ?? "") , ownerName: $0.owner.display_name )
         })))
         
         
@@ -232,9 +232,9 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
         case .featuredPlaylists(let viewModels):
             guard let cell = collectionView
                     .dequeueReusableCell(
-                        withReuseIdentifier: FeaturedPlaylistCell.identifier,
+                        withReuseIdentifier: PlaylistCell.identifier,
                         for: indexPath
-                    ) as? FeaturedPlaylistCell
+                    ) as? PlaylistCell
             else {
                 return UICollectionViewCell()
             }

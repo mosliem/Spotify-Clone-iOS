@@ -37,8 +37,8 @@ class PlaylistVC: UIViewController {
     }
     private func configureCollectionView(){
         view.addSubview(collectionView)
-        collectionView.register(PlaylistCollectionViewCell.self,
-                                forCellWithReuseIdentifier: PlaylistCollectionViewCell.identifier)
+        collectionView.register(PlaylistItemsCollectionViewCell.self,
+                                forCellWithReuseIdentifier: PlaylistItemsCollectionViewCell.identifier)
         collectionView.register(PlaylistCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PlaylistCollectionReusableView.identifier)
         //delegation
         collectionView.delegate = self
@@ -115,9 +115,9 @@ extension PlaylistVC : UICollectionViewDataSource , UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PlaylistCollectionViewCell.identifier,
+            withReuseIdentifier: PlaylistItemsCollectionViewCell.identifier,
             for: indexPath
-        ) as? PlaylistCollectionViewCell else {
+        ) as? PlaylistItemsCollectionViewCell else {
             return UICollectionViewCell()
         }
         cell.configure(viewModel: PlaylistViewModels[indexPath.row])

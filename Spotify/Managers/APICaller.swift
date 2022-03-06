@@ -147,9 +147,9 @@ class APICaller {
     }
  //MARK:- Get Categories
     
-    public func getCategories(completion: @escaping(Result<CategoryResponse, Error>)-> Void){
+    public func getCategories(completion: @escaping(Result<CategoriesResponse, Error>)-> Void){
         createRequest(url:URL(string: Constants.baseAPIUrl + "/browse/categories?limit=50&country=EG"), HttpType: .GET) { [weak self](request) in
-            self?.createTask(type: CategoryResponse.self, request: request) {(result, error) in
+            self?.createTask(type: CategoriesResponse.self, request: request) {(result, error) in
                 guard let result = result , error == nil else{
                     completion(.failure(APIError.failedToGetData))
                     return
@@ -160,10 +160,17 @@ class APICaller {
         
     }
     
-    public func getCategoryDetails() {
-        
+    public func getCategoryDetails(CategoryId : String, completion: @escaping(Result<CategoriesPlaylistResponse,Error>)->Void) {
+        createRequest(url: URL(string:Constants.baseAPIUrl + "/browse/categories/\(CategoryId)/playlists?limit=50"), HttpType: .GET) {[weak self] (request) in
+            self?.createTask(type: CategoriesPlaylistResponse.self, request: request) {(result, error) in
+                guard let result = result , error == nil else{
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                completion(.success(result))
+            }
+        }
     }
-    
     // MARK:- PRIVATE
     
     // Generic Function for creating a request

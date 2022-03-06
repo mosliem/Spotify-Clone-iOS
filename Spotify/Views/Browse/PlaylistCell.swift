@@ -8,7 +8,7 @@
 
 import UIKit
 import SDWebImage
-class FeaturedPlaylistCell : UICollectionViewCell {
+class PlaylistCell : UICollectionViewCell {
     static let identifier = "FeaturedPlaylistCollectionViewCell"
     
     private let playlistCoverImageView : UIImageView = {
@@ -64,7 +64,7 @@ class FeaturedPlaylistCell : UICollectionViewCell {
         ownerNameLabel.frame = CGRect(x: 0, y: playlistNameLabel.bottom+5, width: contentView.width, height: 20)
     }
     
-    func configure (on viewModel : FeaturedPlaylistViewModel){
+    func configure (on viewModel : PlaylistViewModel){
         playlistCoverImageView.sd_setImage(with: viewModel.playlistImageUrl, completed: nil)
         playlistNameLabel.text = viewModel.playlistName
         ownerNameLabel.text = viewModel.ownerName

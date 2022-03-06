@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchVC: UIViewController,UISearchResultsUpdating {
+class SearchVC: UIViewController {
  
 //MARK:- UI Views
     private let searchController : UISearchController = {
@@ -23,8 +23,10 @@ class SearchVC: UIViewController,UISearchResultsUpdating {
             return SearchVC.createCategoryCollection(section: section)
         }))
         
-   
+    private var Category:[Category] = []
     private var categoryViewModel:[CategoryViewModel] = []
+    
+    
     //MARK:- Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,36 +41,13 @@ class SearchVC: UIViewController,UISearchResultsUpdating {
         super.viewDidLayoutSubviews()
         categoryCollectionView.frame = view.bounds
     }
-    func updateSearchResults(for searchController: UISearchController) {
-        
-        guard let resultSearchController = searchController.searchResultsController as? SearchResultVC,
-              let query = searchController.searchBar.text ,
-              !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            return
-        }
-    }
-    
-    private func configureCategoryCollection(){
-        self.view.addSubview(self.categoryCollectionView)
-        categoryCollectionView.delegate = self
-        categoryCollectionView.dataSource = self
-        
-        categoryCollectionView.register(
-            CategoryCollectionViewCell.self,
-            forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier
-        )
-        
-        
-        categoryCollectionView.backgroundColor = .systemBackground
-        
-    }
     
     private func configureSearchController(){
         self.navigationItem.searchController = searchController
         searchController.searchResultsUpdater = self
     }
     
-    
+    //MARK:- Categories Functions
     private static func createCategoryCollection(section : Int) -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)))
         item.contentInsets = NSDirectionalEdgeInsets(top: 6 , leading: 6, bottom: 6, trailing: 6)
@@ -83,13 +62,14 @@ class SearchVC: UIViewController,UISearchResultsUpdating {
             switch result {
             case .success(let model):
                 self.configureCategoryViewModel(model:model)
+                self.Category = model.categories.items
             case.failure(let error):
                 print(error)
             }
         }
     }
     
-    private func configureCategoryViewModel(model: CategoryResponse){
+    private func configureCategoryViewModel(model: CategoriesResponse){
       
         DispatchQueue.main.async {
             self.categoryViewModel = model.categories.items.compactMap({
@@ -99,7 +79,23 @@ class SearchVC: UIViewController,UISearchResultsUpdating {
             
         }
     }
+    private func configureCategoryCollection(){
+        self.view.addSubview(self.categoryCollectionView)
+        categoryCollectionView.delegate = self
+        categoryCollectionView.dataSource = self
+        
+        categoryCollectionView.register(
+            CategoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier
+        )
+        
+        
+        categoryCollectionView.backgroundColor = .systemBackground
+        
+    }
 }
+
+// Categories Collection View Delegates
 extension SearchVC : UICollectionViewDelegate , UICollectionViewDataSource{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -123,5 +119,23 @@ extension SearchVC : UICollectionViewDelegate , UICollectionViewDataSource{
         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { (timer) in
             cell?.alpha = 1
         }
+        let vc = CategoryResultsVC(category: Category[indexPath.row])
+        vc.modalPresentationStyle = .fullScreen
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+        
     }
+}
+
+//MARK:- SearchController Delegates Funcions
+extension SearchVC : UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        guard let resultSearchController = searchController.searchResultsController as? SearchResultVC,
+              let query = searchController.searchBar.text ,
+              !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+    }
+
 }

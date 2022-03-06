@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct  FeaturedPlaylistViewModel {
+struct  PlaylistViewModel {
     let playlistName : String
     let playlistImageUrl : URL?
     let ownerName : String

@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class PlaylistCollectionViewCell: UICollectionViewCell {
+class PlaylistItemsCollectionViewCell: UICollectionViewCell {
     
     static let identifier: String = "PlaylistCollectionViewCell"
     
