@@ -171,6 +171,36 @@ class APICaller {
             }
         }
     }
+    
+    
+//MARK:- Search
+    
+    public func searchForItem(query: String , completion: @escaping(Result< [SearchResults] , Error>)->Void){
+        guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return
+        }
+        createRequest(url: URL(string: Constants.baseAPIUrl + "/search?q=\(query)&type=album,artist,track,playlist&include_external=audio"), HttpType: .GET) { (request) in
+            
+            let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                guard let data = data , error == nil else{
+                    return
+                }
+                do{
+                    let result = try JSONDecoder().decode(SearchResultResponse.self, from: data)
+                    var searchResults:[SearchResults] = []
+                    searchResults.append(contentsOf: result.albums.items.compactMap({ SearchResults.album(model: $0)}))
+                    searchResults.append(contentsOf: result.artists.items.compactMap({SearchResults.artist(model: $0)}))
+                    searchResults.append(contentsOf: result.playlists.items.compactMap({SearchResults.playlist(model: $0)}))
+                    searchResults.append(contentsOf: result.tracks.items.compactMap({SearchResults.track(model: $0)}))
+                    completion(.success(searchResults))
+                }
+                catch{
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
     // MARK:- PRIVATE
     
     // Generic Function for creating a request

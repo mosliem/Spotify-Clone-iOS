@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol SearchBarEditingDelegate : AnyObject {
+    func ShowLoader(_ sender : SearchVC)
+    func dismissLoader(_ sender : SearchVC)
+}
+
 class SearchVC: UIViewController {
  
 //MARK:- UI Views
@@ -26,7 +31,7 @@ class SearchVC: UIViewController {
     private var Category:[Category] = []
     private var categoryViewModel:[CategoryViewModel] = []
     
-    
+    private weak var searchEditingDelegate  :SearchBarEditingDelegate?
     //MARK:- Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +59,6 @@ class SearchVC: UIViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(130)), subitem: item, count: 2)
         let section = NSCollectionLayoutSection(group: group)
         return section
-        
     }
     
     private func fetchCategoriesData(){
@@ -95,6 +99,8 @@ class SearchVC: UIViewController {
     }
 }
 
+
+
 // Categories Collection View Delegates
 extension SearchVC : UICollectionViewDelegate , UICollectionViewDataSource{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -127,8 +133,9 @@ extension SearchVC : UICollectionViewDelegate , UICollectionViewDataSource{
     }
 }
 
+
 //MARK:- SearchController Delegates Funcions
-extension SearchVC : UISearchResultsUpdating{
+extension SearchVC : UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
         guard let resultSearchController = searchController.searchResultsController as? SearchResultVC,
@@ -136,6 +143,18 @@ extension SearchVC : UISearchResultsUpdating{
               !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }
+        
+        
+        APICaller.shared.searchForItem(query: query) { (result) in
+            switch result{
+            case .success(let results):
+                resultSearchController.updateResults(with : results)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        
     }
-
+  
 }

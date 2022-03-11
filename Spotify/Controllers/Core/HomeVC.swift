@@ -135,6 +135,7 @@ class HomeVC: UIViewController {
                   let playlists = featuredPlaylist?.playlists.items
             else{
                 fatalError("notify")
+                self.fetchData()
             }
             
             self.configureModels(newAlbums: albums, tracks: tracks, playlists: playlists)
