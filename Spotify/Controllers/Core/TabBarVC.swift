@@ -15,6 +15,7 @@ class TabBarVC: UITabBarController {
         super.viewWillAppear(true)
         self.navigationController?.navigationBar.isHidden = true
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

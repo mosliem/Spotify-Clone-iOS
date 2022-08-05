@@ -15,6 +15,7 @@ protocol PlaylistCollectionReusableViewDelegate :AnyObject {
 class PlaylistCollectionReusableView: UICollectionReusableView {
     static let identifier = "PlaylistCollectionReusableView"
     weak var delegate : PlaylistCollectionReusableViewDelegate?
+    
     private let PlaylistCoverImageView : UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "photo")

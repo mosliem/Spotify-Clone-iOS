@@ -126,3 +126,9 @@ extension CategoryResultsVC : UICollectionViewDelegate , UICollectionViewDataSou
     }
     
 }
+
+
+
+
+    
+

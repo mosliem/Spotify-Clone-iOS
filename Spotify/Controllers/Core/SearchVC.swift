@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 protocol SearchBarEditingDelegate : AnyObject {
     func ShowLoader(_ sender : SearchVC)
@@ -31,7 +32,7 @@ class SearchVC: UIViewController {
     private var Category:[Category] = []
     private var categoryViewModel:[CategoryViewModel] = []
     
-    private weak var searchEditingDelegate  :SearchBarEditingDelegate?
+    private weak var searchEditingDelegate: SearchBarEditingDelegate?
     //MARK:- Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,11 +55,13 @@ class SearchVC: UIViewController {
     
     //MARK:- Categories Functions
     private static func createCategoryCollection(section : Int) -> NSCollectionLayoutSection {
+        
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)))
         item.contentInsets = NSDirectionalEdgeInsets(top: 6 , leading: 6, bottom: 6, trailing: 6)
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(130)), subitem: item, count: 2)
         let section = NSCollectionLayoutSection(group: group)
         return section
+   
     }
     
     private func fetchCategoriesData(){
@@ -125,6 +128,7 @@ extension SearchVC : UICollectionViewDelegate , UICollectionViewDataSource{
         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { (timer) in
             cell?.alpha = 1
         }
+        
         let vc = CategoryResultsVC(category: Category[indexPath.row])
         vc.modalPresentationStyle = .fullScreen
         vc.navigationItem.largeTitleDisplayMode = .never
@@ -143,7 +147,7 @@ extension SearchVC : UISearchResultsUpdating {
               !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }
-        
+        resultSearchController.delegate = self
         
         APICaller.shared.searchForItem(query: query) { (result) in
             switch result{
@@ -157,4 +161,34 @@ extension SearchVC : UISearchResultsUpdating {
         
     }
   
+}
+
+//MARK:- Routing to results page
+
+extension SearchVC: SearchResultViewControllerDelegate{
+    func didTapResult(_ result: SearchResults) {
+        switch result {
+        
+        case .artist(let model):
+            guard let urlString = model.external_urls.first?.value else {return}
+            let url = URL(string: urlString)!
+            let vc = SFSafariViewController(url: url)
+            present(vc, animated: true)
+            
+        case .album(model: let model):
+           
+            let vc = AlbumVC(album: model)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+    
+        case .playlist(model: let model):
+ 
+            let vc = PlaylistVC(playlist: model)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+
+        case .track(model: let model):
+            break
+        }
+    }
 }

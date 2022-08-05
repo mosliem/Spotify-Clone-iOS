@@ -67,10 +67,9 @@ class NewRealesesCell : UICollectionViewCell {
         
         albumCoverImageView.sizeToFit()
         albumNameLabel.sizeToFit()
-        
         let imageSize : CGFloat = contentView.height - 10
         let albumNameLabelSize = albumNameLabel.sizeThatFits(
-            CGSize(width: contentView.width - 10,
+            CGSize(width: contentView.width,
                    height: contentView.height-10)
         )
         
@@ -80,13 +79,12 @@ class NewRealesesCell : UICollectionViewCell {
             height: imageSize
         )
 
-        
-        let albumNameHeight = min(60 , albumNameLabelSize.height)
+        let albumNameHeight = min(30 , albumNameLabelSize.height)
         
         albumNameLabel.frame = CGRect(
             x: albumCoverImageView.right+10,
             y: 10,
-            width: albumNameLabelSize.width,
+            width: contentView.width - imageSize - 20,
             height: albumNameHeight
         )
         

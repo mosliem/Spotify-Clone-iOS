@@ -134,8 +134,8 @@ class HomeVC: UIViewController {
                   let tracks = recommendations?.tracks,
                   let playlists = featuredPlaylist?.playlists.items
             else{
-                fatalError("notify")
                 self.fetchData()
+                fatalError("notify")
             }
             
             self.configureModels(newAlbums: albums, tracks: tracks, playlists: playlists)
@@ -292,6 +292,7 @@ extension HomeVC : UICollectionViewDelegate, UICollectionViewDataSource {
         header.configure(title: sections[indexPath.section].title)
         return header
     }
+    
     // creates the collection view for (new Realeses, featured playlists and recommendation)
     private static func createSectionLayout(section : Int) -> NSCollectionLayoutSection
     {

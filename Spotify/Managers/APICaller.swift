@@ -1,7 +1,6 @@
 //
 //  ApiCaller.swift
 //  Spotify
-//
 //  Created by mohamedSliem on 1/29/22.
 //
 
@@ -48,7 +47,7 @@ class APICaller {
     
     public func getNewAlbumRealeses(completion : @escaping (Result <NewRealesesResponse , Error>) -> Void) {
         
-        createRequest(url: URL(string:Constants.baseAPIUrl+"/browse/new-releases?limit=36&offset=37"),
+        createRequest(url: URL(string:Constants.baseAPIUrl+"/browse/new-releases?limit=36&country=EG&offset=36"),
                       HttpType: .GET) { (request) in
             
             self.createTask(type: NewRealesesResponse.self, request: request) { (result, error) in
@@ -64,7 +63,7 @@ class APICaller {
     
     // get the featured playlist shown on browse tab
     public func getFeaturesPlaylist(completion : @escaping (Result< FeaturedPlaylistResponse , Error>)->Void ) {
-        let url = URL(string: Constants.baseAPIUrl+"/browse/featured-playlists?limit=20")
+        let url = URL(string: Constants.baseAPIUrl+"/browse/featured-playlists?limit=50&country=EG")
         createRequest(url: url, HttpType: .GET) { [weak self] (request) in
             
             self?.createTask(type: FeaturedPlaylistResponse.self, request:request , taskCompletion: { (result, error) in
@@ -72,7 +71,6 @@ class APICaller {
                     completion(.failure(APIError.failedToGetData))
                     return
                 }
-
                 completion(.success(result))
             })
             
@@ -179,7 +177,7 @@ class APICaller {
         guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             return
         }
-        createRequest(url: URL(string: Constants.baseAPIUrl + "/search?q=\(query)&type=album,artist,track,playlist&include_external=audio"), HttpType: .GET) { (request) in
+        createRequest(url: URL(string: Constants.baseAPIUrl + "/search?q=\(query)&type=album,artist,track,playlist&include_external=audio&limit=10"), HttpType: .GET) { (request) in
             
             let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                 guard let data = data , error == nil else{

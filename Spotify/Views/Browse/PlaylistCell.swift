@@ -46,6 +46,7 @@ class PlaylistCell : UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         playlistCoverImageView.image = nil
@@ -53,21 +54,28 @@ class PlaylistCell : UICollectionViewCell {
         ownerNameLabel.text = nil
         
     }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
+        
         playlistCoverImageView.sizeToFit()
         playlistNameLabel.sizeToFit()
         ownerNameLabel.sizeToFit()
-        let imageSize = contentView.height-60
+        
+        let imageSize = contentView.height - 60
         playlistCoverImageView.frame = CGRect(x: 0, y: 0, width:imageSize, height:imageSize)
-        playlistNameLabel.frame = CGRect(x: 0, y: playlistCoverImageView.bottom+5, width: contentView.width, height: 20)
-        ownerNameLabel.frame = CGRect(x: 0, y: playlistNameLabel.bottom+5, width: contentView.width, height: 20)
+        playlistNameLabel.frame = CGRect(x: 0, y: playlistCoverImageView.bottom + 5, width: contentView.width, height: 20)
+        ownerNameLabel.frame = CGRect(x: 0, y: playlistNameLabel.bottom + 5, width: contentView.width, height: 20)
+    
     }
     
     func configure (on viewModel : PlaylistViewModel){
+        
         playlistCoverImageView.sd_setImage(with: viewModel.playlistImageUrl, completed: nil)
         playlistNameLabel.text = viewModel.playlistName
         ownerNameLabel.text = viewModel.ownerName
+        
     }
+    
 }
 
